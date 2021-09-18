@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 
 const server = express();
 server.use(cors());
+server.use(express.json())
 
 const bookModel = require("./modules/BookModel");
 
@@ -76,5 +77,27 @@ function booksHandle(req,res) {
   })
 
 }
+server.post('/books',booksAdding)
+function booksAdding(req,res){
+  const {title,description,status} = req.body
+  const email = req.query.email
+  console.log("Hello")
+
+  bookModel.create({title:title,description:description,status:status,email:email})
+
+  bookModel.find({email:email},(err,result)=>{
+    if(err){
+      res.status(404).send("There was an error")
+    }else{
+      res.send(result);
+    }
+  })
+  
+
+
+
+}
+
+
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
